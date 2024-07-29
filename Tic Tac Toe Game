@@ -1,0 +1,213 @@
+import java.util.*;
+
+public class Tic_Tac_Toe_Game
+{
+    static String[] board;
+    static String turn;
+
+
+    private static void choosePlayer(String player1, String player2)
+    {
+        Scanner in = new Scanner(System.in);
+        System.out.println("Who want to play first turn: ");
+        System.out.println("press '1' for " + player1);
+        System.out.println("press '2' for " + player2);
+        System.out.println("press '3' for random player");
+
+        int player = in.nextInt();
+
+        // Exception Handling
+        while(player != 1 && player != 2 && player != 3)
+        {
+            System.out.println("Wrong Input " + "\n" + " please Enter Correct Input:");
+            player = in.nextInt();
+        }
+
+        if(player == 1)
+        {
+            turn = player1;
+
+        }
+        else if(player == 2)
+        {
+            turn = player2;
+
+        }
+        else
+        {
+            player = 1 + (int)(Math.random() * 2);
+            if(player == 1)
+            {
+                turn = player1;
+
+            }
+            else
+            {
+                turn = player2;
+
+            }
+        }
+
+    }
+    // Check Winner
+    private static String is_Winner()
+    {
+        for (int i = 0; i < 8; i++)
+        {
+            String line = switch (i)
+            {
+                case 0 -> board[0] + board[1] + board[2];
+                case 1 -> board[3] + board[4] + board[5];
+                case 2 -> board[6] + board[7] + board[8];
+                case 3 -> board[0] + board[3] + board[6];
+                case 4 -> board[1] + board[4] + board[7];
+                case 5 -> board[2] + board[5] + board[8];
+                case 6 -> board[0] + board[4] + board[8];
+                case 7 -> board[2] + board[4] + board[6];
+                default -> null;
+            };
+
+
+            if (line.equals("XXX"))
+            {
+                return "X";
+            }
+
+            else if (line.equals("OOO"))
+            {
+                return "O";
+            }
+        }
+
+        for (int i = 0; i < 9; i++)
+        {
+            if (Arrays.asList(board).contains(String.valueOf(i + 1)))
+            {
+                break;
+            }
+            else if (i == 8)
+            {
+                return "draw";
+            }
+        }
+
+        System.out.println(turn + "'s turn; enter a slot number to place " + turn + " in:");
+        return null;
+    }
+
+
+    private static void print_Game_Board()
+    {
+        System.out.println("|---|---|---|");
+        System.out.println("| " + board[0] + " | " + board[1] + " | " + board[2] + " |");
+        System.out.println("|---|---|---|");
+        System.out.println("| " + board[3] + " | " + board[4] + " | " + board[5] + " |");
+        System.out.println("|---|---|---|");
+        System.out.println("| " + board[6] + " | " + board[7] + " | " + board[8] + " |");
+        System.out.println("|---|---|---|");
+    }
+
+    public static void main(String[] args)
+    {
+        Scanner in = new Scanner(System.in);
+        board = new String[9];
+
+        System.out.print("Enter Player1 Name: ");
+        String player1 = in.nextLine();
+        System.out.print("Enter Player2 Name: ");
+        String player2 = in.nextLine();
+        
+        choosePlayer(player1,player2);
+
+        String winner = null;
+
+        for (int pos = 0; pos < 9; pos++)
+        {
+            board[pos] = String.valueOf(pos + 1);
+        }
+
+        System.out.println("Game start: ");
+        print_Game_Board();
+
+
+
+        if(turn.equals(player1))
+        {
+            System.out.println(player1 + " will play first. Enter a slot number to place " + player1 + " in:");
+        }
+        else
+        {
+            System.out.println(player2 + " will play first. Enter a slot number to place " + player2 + " in:");
+        }
+
+        while (winner == null)
+        {
+            int numInput;
+            // Exception handling.
+            try
+            {
+                numInput = in.nextInt();
+                if (!(numInput > 0 && numInput <= 9))
+                {
+                    System.out.println("Wrong input: please enter correct number:");
+                    continue;
+                }
+            }
+            catch (InputMismatchException e)
+            {
+                System.out.println("Wrong input: please enter correct number:");
+                continue;
+            }
+
+
+            //logic to decide the turn.
+            if (board[numInput - 1].equals(String.valueOf(numInput)))
+            {
+                if(turn.equals(player1))
+                {
+                    board[numInput - 1] = "X";
+                }
+                else
+                {
+                    board[numInput - 1] = "O";
+                }
+
+
+                if (turn.equals(player2))
+                {
+                    turn = player1;
+                }
+                else
+                {
+                    turn = player2;
+                }
+                print_Game_Board();
+                winner = is_Winner();
+            }
+            else
+            {
+                System.out.println("Slot already taken: re-enter slot number:");
+            }
+        }
+
+        // "draw".
+        if (winner.equalsIgnoreCase("draw"))
+        {
+            System.out.println("It's a draw! Thanks for playing.");
+        }
+
+        // winner.
+        else
+        {
+            if(winner.equals("X"))
+            {
+                System.out.println(player1 + " won the match!" + "\n" +"Thanks for playing.");
+            }
+            else
+            {
+                System.out.println( player2 + "  won the match! " + "\n" +  "Thanks for playing.");
+            }
+        }
+        in.close();
+    }
+}
